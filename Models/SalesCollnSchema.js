@@ -6,24 +6,24 @@ const mongoose = require("mongoose");
 const accountSchema = new mongoose.Schema({
   //------------------****************************YOU HAVE TO CHANGE THIS TO ACCOUNTS************
   accountName: { type: String},
-  ctcPercentage: { type: Number },
-  fixedCharge: { type: Number },
-  ctcMinValid:{type:Number},
-  ctcMaxValid:{type:Number},
-  ctcComponents:{type:Number},
-  invoiceRaiseDay:{type:Number},
-  dueDays:{type:Number},
+  ctcPercentage: { type: String },
+  fixedCharge: { type: String },
+  ctcMinValid:{type:String},
+  ctcMaxValid:{type:String},
+  ctcComponents:{type:String},
+  invoiceRaiseDay:{type:String},
+  dueDays:{type:String},
   location:{type:String}, //can be multiple
   billingName:{type:String},
   billAddress:{type:String},
-  gst:{type:Number}
+  gst:{type:String}
   // Add other fields as needed (e.g., profile picture, role, etc.)
 });
 
 accountSchema.index({ctcPercentage:1},{unique:false})
 
 // -----------------------------------------------------------CREATE A MODEL USING THIS SCHEMA
-const Account = mongoose.model("Account", accountSchema);
+const Account = mongoose.model("SalesCollection", accountSchema);
 // Account.dropSearchIndex('ctcPercentage_1')
 
 // -------------------------------------------------------------EXPORT THE CREATED MODEL

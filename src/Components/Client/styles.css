@@ -1,28 +1,10 @@
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  margin-bottom: 5px;
-  padding-bottom: 10px;
-  margin-top: 50px;
-}
-.abc {
-  width: 100%; /* Make sure the table fills the container */
-  table-layout: fixed; /* Fix the table layout to prevent column width from changing */
-}
-.abc th,
-.abc td {
-  width: 150px; /* Set a fixed width for each column */
-}
-
 .form-container1 {
   display: flex;
   align-items: center;
   gap: 25%;
   flex-direction: row;
   justify-content: center;
-  background-color: #070f2b;
+  background-color: #070F2B;
   color: white;
   height: 65px;
   margin-top: 25px;
@@ -34,7 +16,7 @@
   gap: 15px;
   flex-direction: row;
   justify-content: space-between;
-  color: #070f2b;
+  color: #070F2B;
 }
 .form-container2 {
   /* width: 45%; */
@@ -44,7 +26,7 @@
   gap: 15px;
   flex-direction: row;
   justify-content: space-between;
-  color: #070f2b;
+  color: #070F2B;
 }
 .form-container3 {
   /* width: 45%; */
@@ -56,7 +38,7 @@
   margin-top: 20px;
 }
 
-.container2 {
+.container2{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -65,25 +47,25 @@
   justify-content: center;
 }
 
-.container3 {
+.container3{
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 1%;
 }
-.header1 {
+.header1{
   /* width: 30%;
    */
-  /* align-items: center;
+   /* align-items: center;
    padding: 20px;
    gap: 10px; */
-  align-items: center;
-  padding: 20px;
-  /* gap: 10px; */
-  display: flex;
-  gap: 5%;
-  /* justify-content: center; */
+   align-items: center;
+   padding: 20px;
+   /* gap: 10px; */
+   display: flex;
+   gap: 5%;
+   /* justify-content: center; */
 }
 
 /* Global styles */
@@ -92,11 +74,14 @@ body {
   padding: 0;
   font-family: Arial, sans-serif;
   /* background-color: aqua; */
-  background-color: #9290c3; /* Deep purple background color */
+  background-color: #9290C3; /* Deep purple background color */
   /* color: white;
    */
-  color: #070f2b;
+   color: #070F2B;
+
 }
+
+
 a {
   color: black;
   text-decoration: none;
@@ -119,29 +104,31 @@ a {
 /* Text box styles */
 .text-box {
   display: block;
-  margin: 20px auto;
-  width: 50%;
-  padding: 12px;
+  margin: 10px auto;
+  width: 80%;
+  padding: 8px;
   outline: none;
   /* border: 2px solid #070F2B;  */
   /* Change border color */
-  background-color: #f8f9fa;
-  color: #070f2b; /* Text color */
+  background-color: #f8f9fa; 
+  color: #070F2B; /* Text color */
   font-size: 16px;
   border-radius: 8px; /* Rounded corners */
+  
 }
 
 /* Hover state */
 .text-box:hover {
-  border-color: #070f2b; /* Darken border color on hover */
-  box-shadow: 0 0 5px #070f2b;
+  border-color: #070F2B; /* Darken border color on hover */
+  box-shadow: 0 0 5px #070F2B;
 }
 
 /* Focus state */
 .text-box:focus {
   outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 5px #070f2b;
+  box-shadow: 0 0 5px #070F2B; 
 }
+
 
 /* Title styles */
 .title {
@@ -151,8 +138,8 @@ a {
 }
 
 /* Button css */
-.rec-btn {
-  background-color: #070f2b;
+.rec-btn{
+  background-color: #070F2B;
   color: white;
   /* border-radius: 5px; */
   border: none;
@@ -163,9 +150,9 @@ a {
   cursor: pointer;
   /* font-weight: 400; */
 }
-.rec-btn2 {
+.rec-btn2{
   /* background-color: #070F2B; */
-  background-color: #9290c3;
+  background-color: #9290C3;
   color: white;
   /* border-radius: 5px; */
   /* font-size: large; */
@@ -176,16 +163,17 @@ a {
   white-space: nowrap;
   cursor: pointer;
   font-weight: 200;
+  
 }
-input::placeholder {
+input::placeholder{
   /* color: #070F2B; */
-  color: #535c91;
+  color: #535C91;
 }
-h1 {
+h1{
   text-align: center;
 }
 
-.r13-btn-container {
+.r13-btn-container{
   display: flex;
   align-items: center;
   justify-content: center;
@@ -204,140 +192,135 @@ h1 {
   max-width: 400px; /* Adjust max-width as needed */
 }
 
-/* CSS for the scrollbar */
+    /* CSS for the scrollbar */
+    
+    /* CSS for the scrollbar */
+    .table-container::-webkit-scrollbar {
+        width: 12px;
+    }
 
-/* CSS for the scrollbar */
-.table-container::-webkit-scrollbar {
-  width: 12px;
-}
+    /* Track */
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Color of the scrollbar track */
+        border-radius: 10px; /* Rounded corners */
+    }
 
-/* Track */
-.table-container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Color of the scrollbar track */
-  border-radius: 10px; /* Rounded corners */
-}
+    /* Handle */
+    .table-container::-webkit-scrollbar-thumb {
+        background: #070F2B; /* Color of the scrollbar handle */
+        border-radius: 10px; /* Rounded corners */
+    }
 
-/* Handle */
-.table-container::-webkit-scrollbar-thumb {
-  background: #070f2b; /* Color of the scrollbar handle */
-  border-radius: 10px; /* Rounded corners */
-}
+    /* Handle on hover */
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Color of the scrollbar handle on hover */
+    }
 
-/* Handle on hover */
-.table-container::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color of the scrollbar handle on hover */
-}
 
-.custom-input {
-  border: 1px solid #ccc; /* Border color */
-  border-radius: 5px; /* Rounded corners */
-  padding: 8px; /* Padding inside the input */
-  font-size: 16px; /* Font size */
-  width: 150px; /* Width of the input */
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Box shadow */
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Transition effect */
-}
 
-/* Hover state */
-.custom-input:hover {
-  border-color: #070f2b; /* Change border color on hover */
-  box-shadow: 0 0 5px #070f2b;
-}
+    .custom-input {
+        border: 1px solid #ccc; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+        padding: 8px; /* Padding inside the input */
+        font-size: 16px; /* Font size */
+        width: 150px; /* Width of the input */
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Box shadow */
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Transition effect */
+    }
 
-/* Focus state */
-.custom-input:focus {
-  border-color: #070f2b; /* Change border color on focus */
-  outline: none; /* Remove outline */
-  box-shadow: 0 0 5px #070f2b; /* Add shadow on focus */
-}
+    /* Hover state */
+    .custom-input:hover {
+        border-color: #070F2B; /* Change border color on hover */
+        box-shadow: 0 0 5px #070F2B;
+    }
 
-/* // Calling pool page css  */
-.header-calling {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    /* Focus state */
+    .custom-input:focus {
+        border-color: #070F2B; /* Change border color on focus */
+        outline: none; /* Remove outline */
+        box-shadow: 0 0 5px #070F2B; /* Add shadow on focus */
+    }
 
-.calling-container {
-  display: flex;
-  flex-direction: column;
-  /* width: 90%; */
-  justify-content: center;
-  gap: 30px;
-  align-items: center;
-  margin: auto;
-}
-.calling-name {
-  margin-left: 10px;
-}
+    /* // Calling pool page css  */
+    .header-calling{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.item-box1{
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
-}
-.item-box {
-  background-color: white;
-  width: 70%;
-  display: flex;
-  flex-direction: row;
-  border-radius: 10px;
-  align-items: center;
-  /* box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); Box shadow */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  /* border: solid #070F2B 1px; */
-  gap: 10%;
-  height: 150px;
-  /* min-height: 20%; */
-  /* justify-content: space-evenly; */
-}
-.item-box2{
-  display: flex;
-  flex-direction: row;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  height: 150px;
+    .calling-container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* width: 90%; */
+      justify-content:center;
+      margin: auto;
+      gap: 30px;
+      
+    }
+    .item-box1{
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      width: 100%;
+    }
+    .item-box{
+      background-color: white;
+      width: 40%;
+      display: flex;
+      flex-direction: row;
+      border-radius: 10px;
+      align-items: center;
+      /* box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); Box shadow */
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      /* border: solid #070F2B 1px; */
+      gap: 5%;
+      height: 150px;
+      /* min-height: 20%; */
+      /* justify-content: space-evenly; */
+    }
+    .item-box2{
+      display: flex;
+      flex-direction: row;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      height: 150px;
 
-}
+    }
+    
+    
+   .stage-btn-con{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
 
-.item-box3{
-  background-color: white;
-  width: 30%;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  border-radius: 10px;
-  align-items: center;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  /* border: solid #070F2B 1px; */
-  gap: 10%;
-  height: 150px;
-  justify-content: space-evenly;
-}
+   }
+    .calling-image-container{
+      margin-left: 2%;
+      display: flex;
+      width: 28%;
+      flex-direction: row;
+      align-items: center;
+      /* gap: 3%; */
+      justify-content: space-around;
+    }
 
-.stage-btn-con{
-  margin-top: 5px;
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-
- }
- .custom-input1 {
-  border: 1px solid #ccc; /* Border color */
-  background-color: #E5D1FA;
-  border-radius: 5px; /* Rounded corners */
-  padding: 5px; /* Padding inside the input */
-  font-size: 20px; /* Font size */
-  font-weight: bold;
-  width: 150px; /* Width of the input */
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Box shadow */
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Transition effect */
-  }
+    .custom-input1 {
+      border: 1px solid #ccc; /* Border color */
+      background-color: #E5D1FA;
+      border-radius: 5px; /* Rounded corners */
+      padding: 5px; /* Padding inside the input */
+      font-size: 20px; /* Font size */
+      font-weight: bold;
+      width: 150px; /* Width of the input */
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Box shadow */
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Transition effect */
+      }
 
   .custom-input1:hover {
     border-color: #070F2B; /* Change border color on hover */
@@ -375,21 +358,12 @@ h1 {
   box-shadow: 0 0 5px #070F2B; /* Add shadow on focus */
 }
 
-.calling-image-container {
-  margin-left: 2%;
-  display: flex;
-  width: 28%;
-  flex-direction: row;
-  align-items: center;
-  /* gap: 3%; */
-  justify-content: space-around;
-}
-
 /* Style for the comment box */
 .comment-box {
-  width: 100%; /* Full width */
+  width: 80%; /* Full width */
   padding: 10px; /* Padding */
-  margin-top: 10px;
+  margin-top: 15px;
+  
   border: 1px solid #ccc; /* Border */
   border-radius: 8px; /* Rounded corners */
   resize: vertical; /* Allow vertical resizing */
@@ -425,7 +399,7 @@ h1 {
 
 /* Handle */
 .comment-box::-webkit-scrollbar-thumb {
-  background: #070f2b; /* Color of the scrollbar handle */
+  background: #070F2B; /* Color of the scrollbar handle */
   border-radius: 6px; /* Rounded corners of the handle */
 }
 
@@ -434,13 +408,33 @@ h1 {
   background: #555; /* Color of the scrollbar handle on hover */
 }
 
+
+.profile-container{
+  /* border: solid 3px #070F2B ; */
+  border-radius: 7px;
+  width: 59%;
+  /* align-items: center; */
+  margin: auto;
+  margin-top: 50px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+
 /* // R12  */
 
 .table-cont{
 
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-
+  background-color: white;
+  width: 81%;
+  margin: auto;
+  border-radius: 8px;
+  padding: 12px;
+  align-items: center;
+   margin-bottom: 25px;
 }
 
 .table-cont:hover{
@@ -451,18 +445,44 @@ h1 {
 
 
 .item-box4 {
-  background-color: white;
-  border: 1px solid #ccc; /* Light gray border */
-  border-radius: 5px; /* Rounded corners */
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
-  margin: 10px;
+  background-color: #E5D1FA; /* Light gray background */
+  border-radius: 8px; /* Slightly rounded corners */
+  padding: 10px; /* Increased padding for better spacing */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+  margin: 10px; /* Wider margin for better separation */
   display: flex;
+  height: 300px;
   flex-direction: column;
-  width: 600px; /* Increased width for the item box */
-  font-family: Arial, sans-serif; /* Font style */
-  color: black; /* Text color */
+  max-width: 800px; /* Maximum width for better readability */
+  font-family: Arial, sans-serif;
+  color: black; /* Dark text color */
+  text-decoration: none; /* Remove default hyperlink styling */
+  transition: box-shadow 0.3s ease; /* Smooth transition on hover */
+  border: 3.5px solid #070F2B; /* Border color */
+  width: 400px;
+
+  /* Gradient background with shades of #9290C3 */
+  background-image: linear-gradient(175deg, rgb(0 0 0 / 0%) 95%, #B5B3D3 95%),
+                    linear-gradient( 85deg, rgb(0 0 0 / 0%) 95%, #B5B3D3 95%),
+                    linear-gradient(175deg, rgb(0 0 0 / 0%) 90%, #A2A0BE 90%),
+                    linear-gradient( 85deg, rgb(0 0 0 / 0%) 92%, #A2A0BE 92%),
+                    linear-gradient(175deg, rgb(0 0 0 / 0%) 85%, #9290C3 85%),
+                    linear-gradient( 85deg, rgb(0 0 0 / 0%) 89%, #9290C3 89%),
+                    linear-gradient(175deg, rgb(0 0 0 / 0%) 80%, #807EAE 80%),
+                    linear-gradient( 85deg, rgb(0 0 0 / 0%) 86%, #807EAE 86%),
+                    linear-gradient(175deg, rgb(0 0 0 / 0%) 75%, #6E6CAD 75%),
+                    linear-gradient( 85deg, rgb(0 0 0 / 0%) 83%, #6E6CAD 83%),
+                    linear-gradient(175deg, rgb(0 0 0 / 0%) 70%, #5C5AAD 70%),
+                    linear-gradient( 85deg, rgb(0 0 0 / 0%) 80%, #5C5AAD 80%);
+                  
 }
+
+
+
+.item-box4:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
 
 .item-box4 a {
   text-decoration: none; /* Remove underline from the link */
@@ -533,25 +553,13 @@ h1 {
 }
 
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+.calling-container1 {
   display: flex;
-  justify-content: center;
+  flex-direction:row;
+  flex-wrap: wrap;
   align-items: center;
-}
-
-.modal {
-  background-color: white;
-  padding: 20px;
-  width: 90%; /* Adjust the width to occupy 80% of the screen */
-  height: 100%; /* Adjust the height to occupy 80% of the screen */
-  max-width: 800px; /* Optional: Set maximum width */
-  max-height: 100%; /* Optional: Set maximum height */
-  overflow-y: auto; /* Add scroll if content exceeds modal height */
+  justify-content: center;
+  margin: auto;
+  gap: 30px;
 }
 

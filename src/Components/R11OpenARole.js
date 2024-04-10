@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./styles.css";
 import axios from "axios";
 
-const R11 = () => {
+const R11OpenARole = ({ navigateToR11HomePage }) => {
   // const [R_11, setR_11]=useState(false)
   const [validationData, setValidationData] = useState([]);
   const [validationData1, setValidationData1] = useState([]);
+  const [roleStatus, setRoleStatus] = useState('');
 
   const [R11, setR11] = useState({
     companyName: "",
@@ -19,6 +20,7 @@ const R11 = () => {
     maxNoticePeriod: "",
     remoteOrHybrid: "",
     workingDays: "",
+    
   });
 
   //for fetching the company name
@@ -81,28 +83,25 @@ const R11 = () => {
     try {
       // Get current date in Indian Standard Time (IST)
       const currentDate = new Date();
+      console.log(currentDate);  //Mon Apr 01 2024 13:37:40 GMT+0530 (India Standard Time)
 
-// Format the date as dd-mm-yyyy using toLocaleString with options
-const formattedDate = currentDate.toLocaleString('en-IN', {
-  timeZone: 'Asia/Kolkata',
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric'
-});
+    //   Format the date as dd-mm-yyyy using toLocaleString with options
+      const formattedDate = currentDate.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
 
-console.log(formattedDate); 
-
-console.log(formattedDate); // Output: "15-03-2024" (for example)
-
-
+      console.log(formattedDate);  //01/04/2024
       // console.log(formattedDate); // Output: "15-03-2024" (for example)
-
+      setRoleStatus('open');
       // const currentDate = new Date().toISOString();
       const recruiter = {
         name: "John Doe",
         role: "Recruiter",
       };
-      const dataToSend = { ...R11, StartingDate: formattedDate, recruiter };
+      const dataToSend = { ...R11, StartingDate: formattedDate, recruiter,roleStatus:'open' };
       await axios.post("http://localhost:4000/api/R11Info", dataToSend);
       alert("Roles collection data submitted successfully");
       setR11({
@@ -117,7 +116,9 @@ console.log(formattedDate); // Output: "15-03-2024" (for example)
         maxNoticePeriod: "",
         remoteOrHybrid: "",
         workingDays: "",
+        
       }); // Resetting the state after submission
+      setRoleStatus('');
       console.log("Roles collection data submitted successfully");
       console.log(dataToSend);
     } catch (err) {
@@ -136,12 +137,14 @@ console.log(formattedDate); // Output: "15-03-2024" (for example)
           <h1 class="company-name">TheRecAI</h1>
         </div>
         <div class="header1">
-          <button class="rec-btn2">
-            <a href="index.html">Home</a>
-          </button>
-          <button class="rec-btn2">
+          <button
+            class="rec-btn2"
+            onClick={navigateToR11HomePage}
+            
+          >R11HomePage</button>
+          {/* <button class="rec-btn2">
             <a href="R12.html">Go to R12</a>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -326,4 +329,4 @@ console.log(formattedDate); // Output: "15-03-2024" (for example)
   );
 };
 
-export default R11;
+export default R11OpenARole;

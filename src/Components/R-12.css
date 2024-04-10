@@ -86,3 +86,32 @@
   margin-bottom: 5px;
   display: flex;
 }
+
+
+.candidate-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 50px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.candidate-table th,
+.candidate-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  background-color:#fff;
+}
+
+.candidate-table th {
+  background-color:cadetblue;
+}
+
+.candidate-table thead th {
+  border-bottom: 2px solid #333;
+}
+
+.candidate-table tbody tr:last-child td {
+  border-bottom: none;
+}

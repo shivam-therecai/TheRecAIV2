@@ -1,5 +1,5 @@
 const express = require("express");
-const Account = require("../Models/accountSchema");
+const Account = require("../Models/SalesCollnSchema");
 const router2 = express.Router();
 //const app = require("express");
 

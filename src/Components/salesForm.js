@@ -1,8 +1,8 @@
-// components/salesForm.js
 import React, { useState } from "react";
 import axios from "axios"; // For making HTTP requests
 import "./salesForm.css";
-
+//We will add some changes in the design like making the entries in 2 rows instead of a
+//single spreaded horizontal role which we have to scroll. that changes will be maded in the next version that we will make.
 const SalesForm = () => {
   const [formData, setFormData] = useState({
     accountName: "",
@@ -16,7 +16,7 @@ const SalesForm = () => {
     location: "",
     billingName: "",
     billAddress: "",
-    gst: "",   
+    gst: "",
   });
 
   /////---------------------------------------------------THIS SENDS THE POST REQUEST TO THE DESIRED ADDRESS------------------//
@@ -26,7 +26,21 @@ const SalesForm = () => {
       // Send a POST request to your backend route (e.g., '/api/accounts')
       await axios.post("http://localhost:4000/api/accounts", formData);
       console.log("Sales data submitted successfully!");
-      alert('Sales data submitted successfully')
+      alert("Sales data submitted successfully");
+      setFormData({
+        accountName: "",
+        ctcPercentage: "",
+        fixedCharge: "",
+        ctcMinValid: "",
+        ctcMaxValid: "",
+        ctcComponents: "",
+        invoiceRaiseDay: "",
+        dueDays: "",
+        location: "",
+        billingName: "",
+        billAddress: "",
+        gst: "",
+      });
     } catch (error) {
       console.error("Error submitting sales data:", error);
     }

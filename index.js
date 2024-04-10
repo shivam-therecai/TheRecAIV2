@@ -2,10 +2,15 @@
 const express = require("express");
 const userRoutes = require("./routes/userRoutes"); // Import the cors middleware
 const accountRoutes = require("./routes/accountRoutes");
-const Account = require("./Models/accountSchema");
+const Account = require("./Models/SalesCollnSchema");
 const mongoose = require("mongoose");
-const R11Routes=require('./routes/R11InfoRouter')
-const R11InfoRouter = require('./routes/R11InfoRouter');
+const R11Routes = require("./routes/R11InfoRouter");
+const R11InfoRouter = require("./routes/R11InfoRouter");
+const StandardizedCollectionRoute = require("./routes/StandardCollnRoutes");
+const candidateRoutes = require("./routes/candidateRoutes");
+const callingPoolRoutes = require("./routes/callingPoolRoutes");
+
+
 require("dotenv").config();
 
 //This creates an Express application instance.
@@ -19,10 +24,12 @@ mongoose.connect(
   // "mongodb+srv://joepratap:TheRecAI4395@therecaidata1.n66eodg.mongodb.net/?retryWrites=true&w=majority",
   "mongodb+srv://Shivam2408:Shivam2408@cluster0.colzssf.mongodb.net/?retryWrites=true&w=majority",
   {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   }
 );
+
+// Export the upload middleware
 
 app.use(cors()); // Use the cors middleware
 
@@ -38,13 +45,26 @@ app.get("/", (req, res) => {
   //***************************YOU NEED TO CREATE THESE REQUESTS FOR THIS TO ACTUALLY WORK ***************************//
   res.send("Hello World, is it this?!");
 });
-
+app.use("/api/R11Info", R11InfoRouter);
 app.use("/api", userRoutes); // Prefix all user-related routes with '/api'
 app.use("/api", accountRoutes);
-app.use("/api",R11Routes);
+app.use("/api", R11Routes);
+app.use("/api", candidateRoutes);
+app.use("/api/candidates", candidateRoutes);
 
+app.use("/api/candidates/details", candidateRoutes);
+// app.use('/api/candidates/list', callingPoolRoutes);
+app.use("/api/candidates/callingpoollist", callingPoolRoutes);
+//  app.use('/api/candidates/callingpoollist', callingPoolRoutes);
+// app.use('/api/candidates/details', candidateRoutes)
+app.use("/api/candidates/update", candidateRoutes);
+app.use("/api/AcceptedR14/candidates/", candidateRoutes);
+app.use("/api/candidatepool/candidates", candidateRoutes);
+// app.use('/api/candidates/financepeer/candidates', candidateRoutes);
 
-app.use('/api', R11InfoRouter);
+// app.use('/api/candidates', candidateRoutes);
+
+app.use("/api/standard", StandardizedCollectionRoute);
 // Other middleware and routes can be added here
 
 //This starts the Express server and makes it listen on port 3000.

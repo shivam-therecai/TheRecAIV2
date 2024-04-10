@@ -3,7 +3,6 @@ import "./R-12.css";
 import axios from "axios";
 
 const R12 = () => {
-
   const [startDate, setStartDate] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [roleName, setRoleName] = useState("");
@@ -29,60 +28,47 @@ const R12 = () => {
     sourceCode: "",
     sourcingCode: "",
     vendorCode: "",
-    R12Name: "",
-    R12Date: "",
-    candidateCode: "",
-    R13Name: "",
-    R14Name: "",
-    Remark: "",
-    AcceptedOrRejected:"",
+    r12Name: "",
+    r12Date: "",
   });
-  const [submittedCandidates, setSubmittedCandidates] = useState([]);
+
+  // Combine candidate details form data with objectDetails
+  const combinedData = {
+    ...objectDetails,
+    ...candidateDetails,
+  };
 
   // Add state variables for other fields
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (startDate || companyName || roleName) {
-          // console.log(startDate);
-
+        if (startDate && companyName && roleName) {
+          // Normalize user-entered company name and role name
           const normalizedCompanyName = companyName.toLowerCase().trim();
           const normalizedRoleName = roleName.toLowerCase().trim();
 
-          const formattedStartDate = new Date(startDate).toLocaleString(
-            "en-IN",
-            {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            }
-          );
-         
           const response = await axios.get(
-            `http://localhost:4000/api/R11Info?companyName=${normalizedCompanyName}&roleName=${normalizedRoleName}&startDate=${formattedStartDate}`
+            `http://localhost:4000/api/R11Info?startDate=${startDate}&companyName=${normalizedCompanyName}&roleName=${normalizedRoleName}`
           );
-        
-          const filteredResponse = response.data.filter((entry) => {
-            // Format entry.StartingDate to match the format of startDate
-            const formattedEntryStartingDate = new Date(
-              entry.StartingDate
-            ).toLocaleString("en-IN", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            });
 
+          // Filter the response based on normalized company name and role name
+          const filteredResponse = response.data.filter((entry) => {
+            const normalizedResponseCompanyName = entry.companyName
+              .toLowerCase()
+              .trim();
+            const normalizedResponseRoleName = entry.role.toLowerCase().trim();
             return (
-              formattedEntryStartingDate === formattedStartDate &&
-              entry.companyName.toLowerCase().trim() ===
-                normalizedCompanyName &&
-              entry.role.toLowerCase().trim() === normalizedRoleName
+              normalizedResponseCompanyName === normalizedCompanyName &&
+              normalizedResponseRoleName === normalizedRoleName
             );
           });
 
+          // Extract relevant data from the filtered response
           const fetchedObjectIds = filteredResponse.map((entry) => entry._id);
 
+          // Set the state with the extracted object IDs
           setObjectIds(fetchedObjectIds);
+          console.log(ObjectIds);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -90,17 +76,16 @@ const R12 = () => {
     };
 
     fetchData();
-  }, [companyName, roleName, startDate]); // Include startDate as a string in the dependency array
+  }, [startDate, companyName, roleName]);
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
-    // console.log(selectedDate);
   };
 
   const handleObjectIDChange = async (event) => {
     const selectedId = event.target.value;
     setSelectedObjectId(selectedId);
-    // console.log(selectedId);
+    console.log(selectedId);
 
     try {
       const response = await axios.get(
@@ -114,104 +99,42 @@ const R12 = () => {
     }
   };
 
+  // Render options for dropdown
+  // const renderOptions = () => {
+  //   return ObjectIds.map((id) => (
+  //     <option key={id} value={id}>
+  //       {id}
+  //     </option>
+  //   ));
+  // };
+
+  // const handleVerify = () => {
+  //   // Lock initial profile
+  // };
+
   const handleInputChange = (event) => {
     const { name, value, files } = event.target;
-    if (name === "resume") {
-      // Update candidateDetails with the selected file
-      setCandidateDetails((prevDetails) => ({
-        ...prevDetails,
-        resume: files[0], // Store the File object
-      }));
-    } else {
-      setCandidateDetails((prevDetails) => ({
-        ...prevDetails,
-        [name]: value,
-      }));
-    }
+    setCandidateDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: files ? files[0] : value,
+    }));
   };
 
-  const handleSubmit = () => {
-    // Add the current candidate details to the list of submitted candidates
-    setSubmittedCandidates((prevCandidates) => [
-      ...prevCandidates,
-      candidateDetails,
-    ]);
-
-    // Clear the form after submission
-    setCandidateDetails({
-      roleCode: "",
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
-      email: "",
-      linkedinProfile: "",
-      resume: null,
-      experience: "",
-      sourceCode: "",
-      sourcingCode: "",
-      vendorCode: "",
-      r12Name: "",
-      r12Date: "",
-      R13Name:"",
-      R14Name:"",
-      Remark:"",
-      AcceptedOrRejected:"",
-    });
-  };
-
-  const handleSubmitAllProfiles = async () => {
+  const handleSubmit = async () => {
     try {
-      // Iterate through submittedCandidates and send each candidate's data to the backend API
-      for (const candidate of submittedCandidates) {
-        // Extract only the desired fields from objectDetails
-        const { companyName, role, location, technology, skill, StartingDate, R13Name,R14Name,Remark,AcceptedOrRejected } =
-          objectDetails;
-
-        // Combine selected fields from objectDetails with candidate details
-        const combinedData = {
-          companyName,
-          role,
-          location,
-          technology,
-          skill,
-          StartingDate,
-          R13Name,
-          R14Name,
-          Remark,
-          AcceptedOrRejected,
-          resume: candidate.resume,
-          ...candidate,
-        };
-        console.log(objectDetails);
-        console.log(combinedData.resume);
-
-        const response = await axios.post(
-          "http://localhost:4000/api/candidates",
-          combinedData
-        );
-        console.log("Candidate submitted:", response.data);
-      }
-      alert("All profiles submitted successfully");
-      // Clear the submitted candidates list after successful submission
-      setSubmittedCandidates([]);
-      setObjectDetails({
-        companyName: "",
-        role: "",
-        StartingDate: "",
-        location: "",
-        technology: "",
-        skill: "",
-      });
-      setCompanyName("");
-      setStartDate("");
-      setRoleName("");
-      setSelectedObjectId("");
+      // Send combined data to backend API
+      const response = await axios.post(
+        "http://localhost:4000/api/candidates",
+        combinedData
+      );
+      alert('Candidate collection data submitted successfully')
+      console.log("Candidate submitted:", response.data);
+      // Optionally, show a success message or perform other actions after successful submission
     } catch (error) {
-      console.error("Error submitting candidates:", error);
+      console.error("Error submitting candidate:", error);
+      // Handle error (e.g., show error message to user)
     }
   };
-
-  
 
   return (
     <div>
@@ -226,25 +149,18 @@ const R12 = () => {
             textAlign: "center",
             marginright: "1000px",
             marginLeft: "20px",
-            paddingLeft: "0",
           }}
         >
           {/* Company Name */}
-          <h1 className="company-name">TheRecAI </h1>
-        </div>
-        <div class="header1">
-          <button class="rec-btn2">
-            {" "}
-            <a href="index.html">Home</a>{" "}
-          </button>
+          <h1 className="company-name">TheRecAI</h1>
         </div>
       </div>
       <div class="title">Role Variables</div>
-      <div style={{ display: "flex", marginLeft: "10%", paddingLeft: "10px" }}>
+      <div style={{ display: "flex" }}>
         <input
           type="date"
           class="custom-input"
-          name="startDate"
+          name=""
           id=""
           placeholder="Enter Start Date"
           style={{ marginBottom: "5px" }}
@@ -276,39 +192,33 @@ const R12 = () => {
           onChange={(event) => setRoleName(event.target.value)}
         ></input>
       </div>
-      <div style={{ paddingRight: "1000px" }}>
-        <p>Enter Start Date</p>
-      </div>
-      <p style={{ paddingRight: "450px", marginBottom: "40px" }}>
+
+      <p style={{ textAlign: "left" }}>Enter Start Date</p>
+      <p style={{ textAlign: "left", marginBottom: "40px" }}>
         R12 will keep a list of start date for all relevant roles, this will
         help them identify their role quickly
       </p>
-      <div style={{ paddingLeft: "165px" }}>
-        <select
-          name="roleCode"
-          id=""
-          className="custom-input"
-          onChange={handleObjectIDChange}
-          value={selectedObjectId}
-        >
-          <option value="">Select an ID</option>
-          {Array.isArray(ObjectIds) &&
-            ObjectIds.map((id) => (
-              <option key={id} value={id}>
-                {id}
-              </option>
-            ))}
-        </select>
-      </div>
-      <p style={{ paddingRight: "350px", marginBottom: "50px" }}>
+      <select
+        name="roleCode"
+        id=""
+        className="custom-input"
+        onChange={handleObjectIDChange}
+        value={selectedObjectId}
+      >
+        <option value="">Select an ID</option>
+        {Array.isArray(ObjectIds) &&
+          ObjectIds.map((id) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
+      </select>
+      <p style={{ textAlign: "left", marginBottom: "50px" }}>
         Here, R12 will get all roles which have the same start date as the date
         selected. They have to select the right role code
       </p>
       <div class="title">Verify Values</div>
-      <div
-        class="form-container"
-        style={{ marginBottom: "4px", paddingLeft: "10px", marginLeft: "10%" }}
-      >
+      <div class="form-container" style={{ marginBottom: "4px" }}>
         <input
           type="text"
           class="text-box"
@@ -323,6 +233,8 @@ const R12 = () => {
           value={objectDetails.role}
           readOnly
         />
+      </div>
+      <div class="form-container" style={{ marginBottom: "4px" }}>
         <input
           type="text"
           class="text-box"
@@ -338,11 +250,7 @@ const R12 = () => {
           readOnly
         />
       </div>
-
-      <div
-        class="form-container"
-        style={{ marginBottom: "4px", paddingLeft: "10px", marginLeft: "10%" }}
-      >
+      <div class="form-container">
         <input
           type="text"
           class="text-box"
@@ -358,27 +266,18 @@ const R12 = () => {
           readOnly
         />
       </div>
-
-
-{/* //till here we have the new page, R12 close the role. so I have to make a new page till here.  */}
-
-
-
-
-
-
       <p style={{ textAlign: "left" }}>
         R12 will look at this information and make sure they have selected the
         right role, for which they want to submit profiles
       </p>
-      {/* <div style={{ textAlign: "left", left: "100px" }}>
+      <div style={{ textAlign: "left", left: "100px" }}>
         <button className="rec-btn">Verify</button>
       </div>
 
       <p style={{ textAlign: "left", marginBottom: "60px" }}>
         Once this button is pressed, the role code is locked and data entered
         below will be sent with this particular role code attached to it
-      </p> */}
+      </p>
       <div
         className="table-container"
         style={{
@@ -389,14 +288,13 @@ const R12 = () => {
         }}
       >
         <table class="abc">
-          <tr >
+          <tr>
             <th>Role Code</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Phone Number</th>
-            <th style={{ width: "180px" }}>Email</th>
-            <th>Linkedin Profile</th>
-            <th>Attach Resume</th>
+            <th>Email</th>
+            <th>Linkedin Profile</th>s<th>Attach Resume</th>
             <th>Experience</th>
             <th>Source Code</th>
             <th>Sourcing Code (I/O)</th>
@@ -405,7 +303,7 @@ const R12 = () => {
             <th>R12 Date(Generated)</th>
             <th>Candidate Code (Generated)</th>
           </tr>
-
+         
           <tr>
             <td>
               <input
@@ -445,6 +343,8 @@ const R12 = () => {
                 name="phoneNumber"
                 value={candidateDetails.phoneNumber}
                 onChange={handleInputChange}
+                
+
               />
             </td>
             <td>
@@ -473,7 +373,7 @@ const R12 = () => {
                 className="custom-input"
                 style={{ width: "150px" }}
                 name="resume"
-                // value={candidateDetails.resume}
+                value={candidateDetails.resume}
                 onChange={handleInputChange}
               />
             </td>
@@ -529,7 +429,7 @@ const R12 = () => {
             </td>
             <td>
               <input
-                type="date"
+                type="text"
                 className="custom-input"
                 style={{ width: "150px" }}
                 name="r12Date"
@@ -543,7 +443,7 @@ const R12 = () => {
                 className="custom-input"
                 style={{ width: "150px" }}
                 name="lastName"
-                value={candidateDetails.candidateCode}
+                value={candidateDetails.lastName}
                 onChange={handleInputChange}
               />
             </td>
@@ -553,95 +453,79 @@ const R12 = () => {
       <button
         onClick={handleSubmit}
         class="rec-btn"
-        style={{ marginTop: "5px", marginBottom: "27px", alignContent: "1px" }}
+        style={{ marginTop: "5px", marginBottom: "20px", alignContent: "1px" }}
       >
         Submit
       </button>
 
-      <div className="table-container" style={{ maxHeight: "2000px", overflowY: "auto", marginBottom: "5px", paddingBottom: "10px" }}>
-  {submittedCandidates.length === 0 && (
-    <table className="candidate-table" style={{ marginBottom: '20px' }}>
-      <tr>
-        <th style={{ width: "230px" }}>Role Code</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Phone Number</th>
-        <th style={{ width: "280px" }}>Email</th>
-        <th style={{ width: "280px" }}>Linkedin Profile</th>
-        <th>Attach Resume</th>
-      </tr>
-      <tr>
-        <th>Experience</th>
-        <th>Source Code</th>
-        <th>Sourcing Code (I/O)</th>
-        <th>Vendor Code</th>
-        <th>R12 Name</th>
-        <th>R12 Date(Generated)</th>
-        <th>Candidate Code (Generated)</th>
-      </tr>
-    </table>
-  )}
-  {submittedCandidates.map((candidate, index) => (
-  <table key={index} className="candidate-table">
-    <thead>
-      <tr>
-        <th colSpan="7" style={{color:"rebeccapurple"}}>Candidate Details</th>
-      </tr>
-      <tr>
-        <th>Role Code</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Phone Number</th>
-        <th>Email</th>
-        <th>Linkedin Profile</th>
-        <th>Attach Resume</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{candidate.roleCode}</td>
-        <td>{candidate.firstName}</td>
-        <td>{candidate.lastName}</td>
-        <td>{candidate.phoneNumber}</td>
-        <td>{candidate.email}</td>
-        <td>{candidate.linkedinProfile}</td>
-        <td>{candidate.resume ? candidate.resume.name : "No resume attached"}</td>
-      </tr>
-    </tbody>
-    <thead>
-      <tr>
-        <th colSpan="7">Additional Information</th>
-      </tr>
-      <tr>
-        <th>Experience</th>
-        <th>Source Code</th>
-        <th>Sourcing Code (I/O)</th>
-        <th>Vendor Code</th>
-        <th>R12 Name</th>
-        <th>R12 Date(Generated)</th>
-        <th>Candidate Code (Generated)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{candidate.experience}</td>
-        <td>{candidate.sourceCode}</td>
-        <td>{candidate.sourcingCode}</td>
-        <td>{candidate.vendorCode}</td>
-        <td>{candidate.r12Name}</td>
-        <td>{candidate.r12Date}</td>
-        <td>{candidate.candidateCode}</td>
-      </tr>
-    </tbody>
-  </table>
-))}
-
-</div>
-
-
-      <button class="rec-btn" onClick={handleSubmitAllProfiles}>
-        Submit All Profiles
-      </button>
+      <table class="table-container">
+        
+        <tr>
+          <th>Role Code</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Phone Number</th>
+          <th>Email</th>
+          <th>Linkedin Profile</th>
+          <th>Attach Resume</th>
+        </tr>
+        <tr>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="file" className="custom-input" />
+          </td>
+        </tr>
+        <tr>
+          <th>Experience</th>
+          <th>Source Code</th>
+          <th>Sourcing Code (I/O)</th>
+          <th>Vendor Code</th>
+          <th>R12 Name</th>
+          <th>R12 Date(Generated)</th>
+          <th>Candidate Code (Generated)</th>
+        </tr>
+        <tr>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+          <td>
+            <input type="text" className="custom-input" />
+          </td>
+        </tr>
+      </table>
+      <button class="rec-btn">Submit All Profiles</button>
       <p>
         Whenever this button is pressed there will be an alert warning that they
         should verify all data once again. IN LATER VERSION WE WILL HAVE TO GIVE
