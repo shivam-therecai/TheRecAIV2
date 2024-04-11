@@ -23,6 +23,7 @@ import CruxTechClient from "./Components/Client/ClientPageTemplate";
 import FinanacePeerClient from "./Components/Client/FinanacePeerClient";
 import CandidateForClientRole from "./Components/Client/CandidatesForClientRole/CandidateForClientRole";
 import ClientPageTemplate from "./Components/Client/ClientPageTemplate";
+import R12UploadCsv from "./Components/R12UploadCsv";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(() => {
@@ -81,6 +82,7 @@ function App() {
     setCurrentPage("r12candidate");
     setSelectedR12Name(selectedR12Name);
   };
+
   const navigateToR12AddCandidate = () => {
     setCurrentPage("r12addcandidate");
   };
@@ -138,6 +140,10 @@ function App() {
     setSelectedCandidate(selectedCandidate);
     setCurrentPage("candidateForClientRole");
   };
+
+  const navigateToR12UploadCsv=()=>{
+    setCurrentPage('r12uploadcsv')
+  }
 
   // const ClientPageWrapper = ({ selectedClient }) => {
   //   switch (selectedClient) {
@@ -208,8 +214,10 @@ function App() {
           <R12HomePage
             navigateToR12AddCandidate={navigateToR12AddCandidate}
             navigateToR12Candidate={navigateToR12Candidate}
+            navigateToR12UploadCsv={navigateToR12UploadCsv}
           />
         )}
+        {currentPage==='r12uploadcsv' && <R12UploadCsv/>}
         {currentPage === "r12candidate" && ( // Fix here
           <R12Candidate
             selectedR12Name={selectedR12Name}

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-const R12HomePage = ({ navigateToR12AddCandidate, navigateToR12Candidate }) => {
+const R12HomePage = ({ navigateToR12AddCandidate, navigateToR12Candidate,navigateToR12UploadCsv }) => {
 
   const [selectedR12Name, setSelectedR12Name] = useState("");
 
@@ -38,6 +38,11 @@ const R12HomePage = ({ navigateToR12AddCandidate, navigateToR12Candidate }) => {
       </div>
 
       <div className="r13-btn-container">
+        <button
+          className="rec-btn"
+          onClick={navigateToR12UploadCsv}
+         
+        > Upload CSV</button>
         <button
           className="rec-btn"
           onClick={navigateToR12AddCandidate}
