@@ -19,6 +19,7 @@ mongoose.connect(
 
 router.post("/candidates", upload.single("resume"), async (req, res) => {
   try {
+    console.log(req.file)
     const {
       companyName,
       StartingDate,
@@ -85,11 +86,209 @@ router.post("/candidates", upload.single("resume"), async (req, res) => {
   }
 });
 
-router.get('/resume/:candidateId', async (req, res) => {
+
+
+router.post("/candidates/6", upload.any("resume"), async (req, res) => {
+  try {
+    let resumeData = null;
+    if (req.files) {
+      // Filter out duplicate files based on their original names
+      const uniqueFiles = req.files.reduce((acc, file) => {
+        if (!acc.some(f => f.originalname === file.originalname)) {
+          acc.push(file);
+        }
+        return acc;
+      }, []);
+
+      // Map over each unique file object
+      resumeData = uniqueFiles.map(file => ({
+        data: file.buffer, // Store file data as Buffer
+        contentType: file.mimetype // Store file content type
+      }));
+    }
+
+    //console.log(req.files);
+    console.log(resumeData);
+
+    // Extracting candidates array from req.body
+    const { candidates } = JSON.parse(JSON.stringify(req.body));
+
+    // Loop through each candidate object
+    const candidateDataArray = candidates.map((candidate, index) => {
+      const {
+        companyName,
+        StartingDate,
+        role,
+        location,
+        skill,
+        technology,
+        roleCode,
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+        linkedinProfile,
+        experience,
+        sourceCode,
+        sourcingCode,
+        vendorCode,
+        r12Name,
+        r12Date,
+        R13Name,
+        R14Name,
+        Remark,
+        AcceptedOrRejected,
+        
+      } = candidate;
+
+      // Find the corresponding resume data for this candidate
+      const candidateResume = resumeData.find((resume, idx) => idx === index);
+
+      // Create a new candidate data object for each candidate
+      return {
+        companyName,
+        StartingDate: "",
+        role,
+        location,
+        skill,
+        technology,
+        roleCode,
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+        linkedinProfile,
+        experience,
+        sourceCode,
+        sourcingCode,
+        vendorCode,
+        r12Name,
+        r12Date,
+        R13Name: "",
+        R14Name: "",
+        Remark: "",
+        AcceptedOrRejected: "",
+        resume: candidateResume || null // Assign the corresponding resumeData object, or null if not found
+      };
+    });
+
+    const savedCandidates = [];
+    for (const candidateData of candidateDataArray) {
+      const candidate = new Candidate(candidateData);
+      const savedCandidate = await candidate.save();
+      savedCandidates.push(savedCandidate);
+    }
+
+    res.status(201).send(savedCandidates);
+  } catch (error) {
+    console.error("Error saving candidate:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+// router.post("/candidates/6", upload.any("resume"), async (req, res) => {
+//   try {
+//     let resumeData = null;
+//     if (req.files) {
+//       // Filter out duplicate files based on their original names
+//       const uniqueFiles = req.files.reduce((acc, file) => {
+//         if (!acc.some(f => f.originalname === file.originalname)) {
+//           acc.push(file);
+//         }
+//         return acc;
+//       }, []);
+
+//       // Map over each unique file object
+//       resumeData = uniqueFiles.map(file => ({
+//         data: file.buffer, // Store file data as Buffer
+//         contentType: file.mimetype // Store file content type
+//       }));
+//     }
+
+//     //console.log(req.files);
+//      console.log(resumeData);
+
+//     // Extracting candidates array from req.body
+//     const { candidates } = JSON.parse(JSON.stringify(req.body));
+
+//     // Loop through each candidate object
+//     const candidateDataArray = candidates.map((candidate, index) => {
+//       const {
+//         companyName,
+//         StartingDate,
+//         role,
+//         location,
+//         skill,
+//         technology,
+//         roleCode,
+//         firstName,
+//         lastName,
+//         phoneNumber,
+//         email,
+//         linkedinProfile,
+//         experience,
+//         sourceCode,
+//         sourcingCode,
+//         vendorCode,
+//         r12Name,
+//         r12Date,
+//         R13Name,
+//         R14Name,
+//         Remark,
+//         AcceptedOrRejected,
+//       } = candidate;
+
+//       // Create a new candidate data object for each candidate
+//       return {
+//         companyName,
+//         StartingDate: "",
+//         role,
+//         location,
+//         skill,
+//         technology,
+//         roleCode,
+//         firstName,
+//         lastName,
+//         phoneNumber,
+//         email,
+//         linkedinProfile,
+//         experience,
+//         sourceCode,
+//         sourcingCode,
+//         vendorCode,
+//         r12Name,
+//         r12Date,
+//         R13Name: "",
+//         R14Name: "",
+//         Remark: "",
+//         AcceptedOrRejected: "",
+//         resume: resumeData[index] // Assign the corresponding resumeData object
+//       };
+//     });
+
+//     const savedCandidates = [];
+//     for (const candidateData of candidateDataArray) {
+//       const candidate = new Candidate(candidateData);
+//       const savedCandidate = await candidate.save();
+//       savedCandidates.push(savedCandidate);
+//     }
+
+//     res.status(201).send(savedCandidates);
+//   } catch (error) {
+//     console.error("Error saving candidate:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
+
+
+
+router.get("/resume/:candidateId", async (req, res) => {
   try {
     // Find the candidate by ID
     const candidate = await Candidate.findById(req.params.candidateId);
-    
+
     // Check if the candidate exists
     if (!candidate) {
       return res.status(404).json({ message: "Candidate not found" });
@@ -97,18 +296,19 @@ router.get('/resume/:candidateId', async (req, res) => {
 
     // Check if the candidate has a resume
     if (!candidate.resume) {
-      return res.status(404).json({ message: "Resume not found for this candidate" });
+      return res
+        .status(404)
+        .json({ message: "Resume not found for this candidate" });
     }
 
     // Send the resume file as a response
-    res.set('Content-Type', candidate.resume.contentType); // Set the content type
+    res.set("Content-Type", candidate.resume.contentType); // Set the content type
     res.send(candidate.resume.data); // Send the resume data
   } catch (error) {
     console.error("Error fetching candidate's resume:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 router.get("/R12Candidate", async (req, res) => {
   try {
@@ -131,10 +331,10 @@ router.get("/R12Candidate", async (req, res) => {
 
 router.get("/candidates", async (req, res) => {
   try {
-    console.log('hi there')
+    console.log("hi there");
     const candidates = await Candidate.find({ R13Name: "" }, { __v: 0 }); // Exclude _id and __v fields
     res.json(candidates);
-    console.log('hi there')
+    console.log("hi there");
   } catch (error) {
     console.error("Error fetching candidates:", error);
     res.status(500).send("Internal Server Error");
@@ -148,7 +348,7 @@ router.get("/:id", async (req, res) => {
     if (!candidate) {
       return res.status(404).json({ message: "Candidate not found" });
     }
-    console.log('hi there')
+    console.log("hi there");
     // Adjust the response according to your needs, sending only required fields
     const { firstName, lastName, roleName /* Add other fields you need */ } =
       candidate;
@@ -266,11 +466,11 @@ router.get("/candidates/5", async (req, res) => {
 
     // Log the received query parameters
     console.log("Received query parameters:", req.query);
-    console.log('hi')
+    console.log("hi");
     // Build the query object based on the provided parameters
     const query = {
       R14Name: { $ne: "" }, // Exclude documents where R14Name is empty or not set
-      AcceptedOrRejected: "Accepted"
+      AcceptedOrRejected: "Accepted",
     };
 
     // If R14Name is provided, include it in the query
@@ -290,15 +490,15 @@ router.get("/candidates/5", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-router.get('/candidates/6', async (req, res) => {
+router.get("/candidates/6", async (req, res) => {
   try {
     // Fetch candidates from the database
     const candidates = await Candidate.find({
       AcceptedOrRejected: "Accepted",
-      R14Name: { $exists: false } // Filter out candidates with R14Name undefined or null
+      R14Name: { $exists: false }, // Filter out candidates with R14Name undefined or null
     });
-console.log('hi there')
-console.log(candidates);
+    console.log("hi there");
+    console.log(candidates);
     // Send the filtered candidates as response
     res.json(candidates);
   } catch (error) {
@@ -306,11 +506,6 @@ console.log(candidates);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
-
-
-
 
 router.post("/:category", async (req, res) => {
   const {
@@ -370,8 +565,6 @@ router.post("/:category", async (req, res) => {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
-
-
 
 module.exports = router;
 

@@ -59,3 +59,32 @@
   //     console.error("Error submitting candidates:", error);
   //   }
   // };
+
+
+  // const handleFileInputChange = (event) => {
+  //   const file = event.target.files[0];
+  //   setCandidateDetails((prevDetails) => ({
+  //     ...prevDetails,
+  //     resume: file, // Store the File object
+  //   }));
+
+  //   // Reset the file input element
+  //   event.target.value = null;
+  // };
+
+
+    // const handleInputChange = (event) => {
+  //   const { name, value, files } = event.target;
+  //   if (name === "resume") {
+  //     // Update candidateDetails with the selected file
+  //     setCandidateDetails((prevDetails) => ({
+  //       ...prevDetails,
+  //       resume: files[0], // Store the File object
+  //     }));
+  //   } else {
+  //     setCandidateDetails((prevDetails) => ({
+  //       ...prevDetails,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };

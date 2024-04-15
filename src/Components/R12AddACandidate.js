@@ -691,7 +691,14 @@ const R12AddCandidate = ({ navigateToR12HomePage }) => {
               style={{
                 paddingLeft: "10px",
                 width: "100%",
-                marginBottom: "25px",
+                borderColor: "darkblue",
+                borderCollapse: "separate", // Separate border model
+                borderSpacing: "1px", // Spacing between table elements
+                borderStyle: "solid", // Solid border style
+                borderWidth: "3px", // Thick border width
+                borderRadius: "10px", // Rounded corners
+                marginBottom: "20px",
+                backgroundColor: index % 2 === 0 ? "lightgrey" : "darkgrey",
               }}
             >
               <tr>
@@ -704,14 +711,18 @@ const R12AddCandidate = ({ navigateToR12HomePage }) => {
                 <th>Attach Resume</th>
               </tr>
 
-              <tr>
-                <td>{candidate.roleCode}</td>
-                <td>{candidate.firstName}</td>
-                <td>{candidate.lastName}</td>
-                <td>{candidate.phoneNumber}</td>
-                <td>{candidate.email}</td>
-                <td>{candidate.linkedinProfile}</td>
-                <td>
+              <tr style={{
+                  marginBottom: "10px",
+                  borderBlockStartWidth: "3px",
+                  borderBlockStartColor: "ThreeDDarkShadow",
+                }}>
+                <td style={{backgroundColor:"white", height:'13px'}} >{candidate.roleCode}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.firstName}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.lastName}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.phoneNumber}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.email}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.linkedinProfile}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>
                   {candidate.resume
                     ? candidate.resume.name
                     : "No resume attached"}
@@ -729,13 +740,13 @@ const R12AddCandidate = ({ navigateToR12HomePage }) => {
               </tr>
 
               <tr>
-                <td>{candidate.experience}</td>
-                <td>{candidate.sourceCode}</td>
-                <td>{candidate.sourcingCode}</td>
-                <td>{candidate.vendorCode}</td>
-                <td>{candidate.r12Name}</td>
-                <td>{candidate.r12Date}</td>
-                <td>{candidate.candidateCode}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.experience}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.sourceCode}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.sourcingCode}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.vendorCode}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.r12Name}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.r12Date}</td>
+                <td style={{backgroundColor:"white", height:'13px'}}>{candidate.candidateCode}</td>
               </tr>
             </table>
           ))}

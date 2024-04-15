@@ -16,27 +16,6 @@ const R12UploadCsv = () => {
     technology: "",
     skill: "",
   });
-  const [candidateDetails, setCandidateDetails] = useState({
-    roleCode: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    email: "",
-    linkedinProfile: "",
-    resume: null, // For file upload
-    experience: "",
-    sourceCode: "",
-    sourcingCode: "",
-    vendorCode: "",
-    R12Name: "",
-    R12Date: "",
-    candidateCode: "",
-    R13Name: "",
-    R14Name: "",
-    Remark: "",
-    AcceptedOrRejected: "",
-  });
-  const [submittedCandidates, setSubmittedCandidates] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,34 +80,18 @@ const R12UploadCsv = () => {
     }
   };
 
-  const handleInputChange = (event) => {
-    const { name, value, files } = event.target;
-    if (name === "resume") {
-      // Update candidateDetails with the selected file
-      setCandidateDetails((prevDetails) => ({
-        ...prevDetails,
-        resume: files[0], // Store the File object
-      }));
-    } else {
-      setCandidateDetails((prevDetails) => ({
-        ...prevDetails,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    setCandidateDetails((prevDetails) => ({
-      ...prevDetails,
-      resume: file, // Store the File object
-    }));
-
-    // Reset the file input element
-    event.target.value = null;
-  };
-
   const [uploadedData, setUploadedData] = useState([]);
+  const [candidateDetailsArray, setCandidateDetailsArray] = useState([]);
+
+  const handleInputChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedCandidateDetailsArray = [...candidateDetailsArray];
+    updatedCandidateDetailsArray[index] = {
+      ...updatedCandidateDetailsArray[index],
+      [name]: value,
+    };
+    setCandidateDetailsArray(updatedCandidateDetailsArray);
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -167,8 +130,133 @@ const R12UploadCsv = () => {
 
     reader.readAsText(file);
   };
+  const camelCaseKeys = (obj) => {
+    const camelCaseObj = {};
+    for (const key in obj) {
+      const camelCaseKey = key
+        .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+          return index === 0 ? word.toLowerCase() : word.toUpperCase();
+        })
+        .replace(/\s+/g, "");
+      camelCaseObj[camelCaseKey] = obj[key];
+    }
+    return camelCaseObj;
+  };
 
-  console.log(uploadedData);
+  const handleCombineAndSubmit = async () => {
+    try {
+      const formData = new FormData();
+
+      // Transform data to the desired format
+      const transformedData = uploadedData.map((rowData, index) => {
+        const candidateDetails = candidateDetailsArray[index] || {}; // Use empty object if candidate details are undefined
+        const combinedRow = {
+          ...rowData,
+          ...candidateDetails,
+          ...objectDetails,
+        };
+
+        const camelCaseCombinedRow = camelCaseKeys(combinedRow);
+
+        const fieldsToSetEmptyString = [
+          "roleCode",
+          "experience",
+          "sourceCode",
+          "sourcingCode",
+          "vendorCode",
+          "r12Name",
+          "r12Date",
+          "candidateCode",
+        ];
+
+        fieldsToSetEmptyString.forEach((field) => {
+          if (typeof camelCaseCombinedRow[field] === "undefined") {
+            camelCaseCombinedRow[field] = "";
+          }
+        });
+
+        if (camelCaseCombinedRow.hasOwnProperty("emailAddress")) {
+          camelCaseCombinedRow.email = camelCaseCombinedRow.emailAddress;
+          delete camelCaseCombinedRow.emailAddress;
+        }
+
+        if (camelCaseCombinedRow.hasOwnProperty("profileURL")) {
+          camelCaseCombinedRow.linkedinProfile =
+            camelCaseCombinedRow.profileURL;
+          delete camelCaseCombinedRow.profileURL;
+        }
+
+        const excludedFields = [
+          "activeProject",
+          "currentCompany",
+          "currentTitle",
+          "feedback",
+          "notes",
+          "headline",
+          "workingDays",
+        ];
+
+        excludedFields.forEach((field) => {
+          delete camelCaseCombinedRow[field];
+        });
+
+        return camelCaseCombinedRow;
+      });
+
+      transformedData.forEach((candidate, index) => {
+        // Append each candidate's data to formData
+        for (const key in candidate) {
+          formData.append(`candidates[${index}][${key}]`, candidate[key]);
+        }
+
+        // Append resume file if it exists for this candidate
+        if (
+          candidateDetailsArray[index] &&
+          candidateDetailsArray[index].resume
+        ) {
+          formData.append(
+            `candidates[${index}][resume]`,
+            candidateDetailsArray[index].resume
+          );
+          console.log(`candidates[${index}][resume]`);
+        }
+      });
+      console.log(transformedData.length === candidateDetailsArray.length);
+      console.log(transformedData);
+      console.log(candidateDetailsArray);
+      transformedData.forEach((candidate, index) => {
+        console.log(candidate === candidateDetailsArray[index]); // Check if the elements at the same index are the same object
+      });
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+      const response = await axios.post(
+        "http://localhost:4000/api/candidates/6",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      alert("upload csv done successfully");
+      setUploadedData([])
+      setCandidateDetailsArray([])
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
+  };
+
+  const handleFileInputChange = (index, event) => {
+    const { name, files } = event.target;
+    const updatedCandidateDetailsArray = [...candidateDetailsArray];
+    updatedCandidateDetailsArray[index] = {
+      ...updatedCandidateDetailsArray[index],
+      resume: files[0],
+    };
+    setCandidateDetailsArray(updatedCandidateDetailsArray);
+  };
 
   return (
     <div>
@@ -178,7 +266,7 @@ const R12UploadCsv = () => {
         </div>
 
         <div className="header1" style={{ paddingLeft: 0 }}>
-          <h1 className="company-name">TheRecAI</h1>{" "}
+          <h1 className="company-name">TheRecAI</h1>
         </div>
         <div className="header1">
           <button className="rec-btn2">R12HomePage</button>
@@ -324,16 +412,21 @@ const R12UploadCsv = () => {
           }}
         >
           {uploadedData.map((rowData, index) => (
-            <table style={{paddingLeft: "10px",
-            width: "100%",
-            borderColor: "darkblue",
-            borderCollapse: "separate", // Separate border model
-            borderSpacing: "1px", // Spacing between table elements
-            borderStyle: "solid", // Solid border style
-            borderWidth: "3px", // Thick border width
-            borderRadius: "10px", // Rounded corners
-            marginBottom: "20px",
-            backgroundColor: index % 2 === 0 ? "lightgrey" : "darkgrey",}}>
+            <table
+              key={index}
+              style={{
+                paddingLeft: "10px",
+                width: "100%",
+                borderColor: "darkblue",
+                borderCollapse: "separate", // Separate border model
+                borderSpacing: "1px", // Spacing between table elements
+                borderStyle: "solid", // Solid border style
+                borderWidth: "3px", // Thick border width
+                borderRadius: "10px", // Rounded corners
+                marginBottom: "20px",
+                backgroundColor: index % 2 === 0 ? "lightgrey" : "darkgrey",
+              }}
+            >
               <tr>
                 <th>Role Code</th>
                 <th>First Name</th>
@@ -345,7 +438,11 @@ const R12UploadCsv = () => {
               </tr>
               <tr
                 key={index}
-                style={{ marginBottom: "10px", borderBlockStartWidth:'3px', borderBlockStartColor:'ThreeDDarkShadow',  }}
+                style={{
+                  marginBottom: "10px",
+                  borderBlockStartWidth: "3px",
+                  borderBlockStartColor: "ThreeDDarkShadow",
+                }}
               >
                 <td>
                   <input
@@ -353,8 +450,8 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="roleCode"
-                    value={candidateDetails.roleCode}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.roleCode || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -364,8 +461,6 @@ const R12UploadCsv = () => {
                     style={{ width: "150px" }}
                     name="firstName"
                     value={rowData["First Name"]}
-                    onClick={()=>{console.log(rowData['First Name'])}}
-                    
                   />
                 </td>
                 <td>
@@ -384,9 +479,6 @@ const R12UploadCsv = () => {
                     style={{ width: "150px" }}
                     name="phoneNumber"
                     value={rowData["Phone Number"]}
-                    onClick={() => {
-                      console.log(rowData["Phone Number"]);
-                    }}
                   />
                 </td>
                 <td>
@@ -395,10 +487,7 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="email"
-                    value={rowData["Email Address"]}
-                    onClick={function () {
-                      console.log(rowData);
-                    }}
+                    defaultValue={rowData["Email Address"]}
                   />
                 </td>
                 <td>
@@ -415,7 +504,9 @@ const R12UploadCsv = () => {
                     type="file"
                     style={{ width: "150px" }}
                     name="resume"
-                    onChange={handleFileInputChange}
+                    onChange={(event) => handleFileInputChange(index, event)}
+
+                    // Pass index and event to the function
                   />
                 </td>
               </tr>
@@ -429,15 +520,15 @@ const R12UploadCsv = () => {
                 <th>R12 Date(Generated)</th>
                 <th>Candidate Code (Generated)</th>
               </tr>
-              <tr >
+              <tr>
                 <td>
                   <input
                     type="text"
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="experience"
-                    value={candidateDetails.experience}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.experience || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -446,8 +537,8 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="sourceCode"
-                    value={candidateDetails.sourceCode}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.sourceCode || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -456,8 +547,8 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="sourcingCode"
-                    value={candidateDetails.sourcingCode}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.sourcingCode || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -466,8 +557,8 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="vendorCode"
-                    value={candidateDetails.vendorCode}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.vendorCode || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -476,8 +567,8 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="r12Name"
-                    value={candidateDetails.r12Name}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.r12Name || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -486,8 +577,8 @@ const R12UploadCsv = () => {
                     className="custom-input"
                     style={{ width: "150px" }}
                     name="r12Date"
-                    value={candidateDetails.r12Date}
-                    onChange={handleInputChange}
+                    value={candidateDetailsArray[index]?.r12Date || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
                 <td>
@@ -495,9 +586,9 @@ const R12UploadCsv = () => {
                     type="text"
                     className="custom-input"
                     style={{ width: "150px" }}
-                    name="lastName"
-                    value={candidateDetails.candidateCode}
-                    onChange={handleInputChange}
+                    name="candidateCode"
+                    value={candidateDetailsArray[index]?.candidateCode || ""}
+                    onChange={(event) => handleInputChange(index, event)}
                   />
                 </td>
               </tr>
@@ -518,6 +609,13 @@ const R12UploadCsv = () => {
         }}
         placeholder="Upload CSV"
       ></input>
+      <button
+        className="rec-btn"
+        style={{ marginTop: 5, marginLeft: "8%" }}
+        onClick={handleCombineAndSubmit}
+      >
+        Submit All Profiles
+      </button>
     </div>
   );
 };
