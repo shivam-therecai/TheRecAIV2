@@ -29,7 +29,10 @@ const candidateSchema = new mongoose.Schema({
     R13Name:String,
     R14Name:String,
     Remark:String,
-    AcceptedOrRejected:String
+    AcceptedOrRejected:String,
+    R14AcceptedOrRejected:String,
+    R14Remark:String,
+    ClientsComment:String
 });
 
 module.exports = mongoose.model('Candidate', candidateSchema);

@@ -31,13 +31,15 @@ const ClientHomePage = ({ navigateToClientPage }) => {
   return (
     <div className="container">
       <h1 className="heading">Welcome to Client Portal</h1>
-      <div className="button-container">
+      <div className="button-container" style={{display:'inline-block', marginBottom:'1px', justifyContent:'center'}}>
         {/* Map over accountNames to generate buttons dynamically */}
         {accountNames.map((accountName, index) => (
           <button
             key={index}
             className="button"
             onClick={() => handleNavigateToClient(accountName)}
+            style={{marginBottom:'80px'}}
+            
           >
             <div className="button-content">
               <img

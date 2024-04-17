@@ -24,6 +24,7 @@ import FinanacePeerClient from "./Components/Client/FinanacePeerClient";
 import CandidateForClientRole from "./Components/Client/CandidatesForClientRole/CandidateForClientRole";
 import ClientPageTemplate from "./Components/Client/ClientPageTemplate";
 import R12UploadCsv from "./Components/R12UploadCsv";
+import axios from 'axios';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(() => {
@@ -55,6 +56,8 @@ function App() {
       setSelectedCandidate(JSON.parse(storedCandidate));
     }
   }, []);
+
+  
 
   const navigateToClientPage = (accountName) => {
     setSelectedClient(accountName);
@@ -272,7 +275,7 @@ function App() {
         )}
 
         {currentPage === "candidateForClientRole" && (
-          <CandidateForClientRole candidate={selectedCandidate} />
+          <CandidateForClientRole candidate={selectedCandidate}  navigateToClient={navigateToClient}/>
         )}
       </main>
     </div>

@@ -177,6 +177,9 @@ const R12AddCandidate = ({ navigateToR12HomePage }) => {
         formData.append("Remark", "");
         formData.append("AcceptedOrRejected", "");
         formData.append("R13Name", "");
+        formData.append("R14Remark","");
+        formData.append("R14AcceptedOrRejected","");
+        formData.append("ClientsComment","");
         formData.append("firstName", candidate.firstName);
         formData.append("lastName", candidate.lastName);
         formData.append("phoneNumber", candidate.phoneNumber);
@@ -231,6 +234,10 @@ const R12AddCandidate = ({ navigateToR12HomePage }) => {
       R14Name: "",
       Remark: "",
       AcceptedOrRejected: "",
+      R14Remark:"",
+      R14AcceptedOrRejected:"",
+      ClientsComment:""
+
       });
       setObjectDetails({
         companyName: "",

@@ -167,6 +167,13 @@ const R12UploadCsv = () => {
           "r12Name",
           "r12Date",
           "candidateCode",
+          "R14Remark",
+          "R14AcceptedOrRejected",
+          "AcceptedOrRejected",
+          "R13Name",
+          "R14Name",
+          "Remark",
+          "ClientsComment"
         ];
 
         fieldsToSetEmptyString.forEach((field) => {

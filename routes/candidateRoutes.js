@@ -43,6 +43,9 @@ router.post("/candidates", upload.single("resume"), async (req, res) => {
       R14Name,
       Remark,
       AcceptedOrRejected,
+      R14AcceptedOrRejected,
+      R14Remark,
+      ClientsComment
     } = req.body;
 
     // Create a new Candidate object with the extracted data
@@ -69,6 +72,9 @@ router.post("/candidates", upload.single("resume"), async (req, res) => {
       R14Name,
       Remark,
       AcceptedOrRejected,
+      R14AcceptedOrRejected,
+      R14Remark,
+      ClientsComment,
       resume: {
         data: req.file.buffer, // Store file data as Buffer
         contentType: req.file.mimetype // Store file content type
@@ -138,6 +144,9 @@ router.post("/candidates/6", upload.any("resume"), async (req, res) => {
         R14Name,
         Remark,
         AcceptedOrRejected,
+        R14AcceptedOrRejected,
+        R14Remark,
+        ClientsComment
         
       } = candidate;
 
@@ -168,6 +177,9 @@ router.post("/candidates/6", upload.any("resume"), async (req, res) => {
         R14Name: "",
         Remark: "",
         AcceptedOrRejected: "",
+        R14AcceptedOrRejected:"",
+        R14Remark:"",
+        ClientsComment:"",
         resume: candidateResume || null // Assign the corresponding resumeData object, or null if not found
       };
     });
@@ -281,7 +293,21 @@ router.post("/candidates/6", upload.any("resume"), async (req, res) => {
 //   }
 // });
 
-
+router.get("/candidates/:id/remarks", async (req, res) => {
+  try {
+    const candidateId = req.params.id;
+    const candidate = await Candidate.findById(candidateId);
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+    // Assuming remarks are stored in the candidate object with a field named 'remark'
+    const remarks = candidate.Remark;
+    res.json({ remark: remarks });
+  } catch (error) {
+    console.error("Error fetching remarks:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 router.get("/resume/:candidateId", async (req, res) => {
@@ -356,6 +382,144 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching candidate details:", error);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+router.put('/:id/1', async (req, res) => {
+  const { id } = req.params; // Extract candidate ID from request params
+  const { R14Remark } = req.body; // Extract R14Remark from request body
+
+  try {
+    console.log('hey there')
+    // Find the candidate by ID
+    const candidate = await Candidate.findById(id);
+
+    if (!candidate) {
+      return res.status(404).json({ message: 'Candidate not found' });
+    }
+
+    // Update the candidate's R14Remark
+    candidate.R14Remark = R14Remark;
+
+    // Save the updated candidate
+    await candidate.save();
+
+    // Send response indicating success
+    res.status(200).json({ message: 'R14Remark updated successfully', candidate });
+  } catch (error) {
+    console.error('Error updating R14Remark:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+router.get('/:id/2', async (req, res) => {
+  try {
+    console.log('hi how are you shivam')
+    const candidateId = req.params.id;
+    const candidate = await Candidate.findById(candidateId);
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+    res.status(200).json({ R14Remark: candidate.R14Remark });
+    console.log(candidate.R14Remark)
+  } catch (error) {
+    console.error("Error fetching R14 remark:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Assuming you have already set up your Express server and imported necessary modules
+
+// Define the route handler for accepting a candidate
+router.put('/:candId/5', async (req, res) => {
+  const candId = req.params.candId;
+  const { R14AcceptedOrRejected } = req.body;
+
+  try {
+    console.log('this is accepted')
+    // Assuming you have a database model for candidates and you are updating the candidate with the provided candId
+    const updatedCandidate = await Candidate.findByIdAndUpdate(
+      candId,
+      { R14AcceptedOrRejected },
+      // { new: true }
+      // To return the updated document
+    );
+
+    if (!updatedCandidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    res.json(updatedCandidate);
+  } catch (error) {
+    console.error("Error accepting candidate:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.put('/:candId/6', async (req, res) => {
+  const candId = req.params.candId;
+  const { R14AcceptedOrRejected } = req.body;
+
+  try {
+    console.log('this is rejected')
+    // Assuming you have a database model for candidates and you are updating the candidate with the provided candId
+    const updatedCandidate = await Candidate.findByIdAndUpdate(
+      candId,
+      { R14AcceptedOrRejected },
+      // To return the updated document
+    );
+
+    if (!updatedCandidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    res.json(updatedCandidate);
+  } catch (error) {
+    console.error("Error accepting candidate:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+router.put('/candidates/:candId/7', async (req, res) => {
+  const { candId } = req.params;
+  const { ClientsComment } = req.body;
+
+  try {
+    console.log('yeah buddy')
+    // Find the candidate by ID and update the ClientsComment field
+    const updatedCandidate = await Candidate.findByIdAndUpdate(
+      candId,
+      { $set: { ClientsComment } }, // Update the ClientsComment field
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedCandidate) {
+      return res.status(404).json({ message: 'Candidate not found' });
+    }
+
+    res.status(200).json(updatedCandidate);
+  } catch (error) {
+    console.error("Error saving client's comment:", error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+router.get('/candidates/:candId/8', async (req, res) => {
+  const { candId } = req.params;
+
+  try {
+    // Find the candidate by ID
+    console.log('no buddy')
+    const candidate = await Candidate.findById(candId);
+
+    if (!candidate) {
+      return res.status(404).json({ message: 'Candidate not found' });
+    }
+
+    res.status(200).json({ ClientsComment: candidate.ClientsComment });
+  } catch (error) {
+    console.error("Error fetching candidate's ClientsComment:", error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
